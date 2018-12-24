@@ -10,7 +10,9 @@ module.exports = function (date) {
             var result = this.date.toLocaleString();
             var args = result.split(' ');
             var dateArgs = args[0].split("-");
-            var year = dateArgs[0];
+            var year = dateArgs[0] < 2000
+                ? 2000
+                : dateArgs[0];
             var month = String(dateArgs[1]).length === 1
                 ? "0" + dateArgs[1]
                 : String(dateArgs[1])
@@ -28,7 +30,14 @@ module.exports = function (date) {
     return Object.defineProperties(obj, {
         'add': {
             value: function (units, type) {
+                console.log(units, type);
+                if (units < 0 || !['hours', 'months', 'days', 'minutes', 'years'].includes(type)) {
+                    throw new TypeError();
+                }
+
                 switch (type) {
+                    case 'years':
+                        this.date.setFullYear(this.date.getFullYear() + units);
                     case 'hours':
                         this.date.setHours(this.date.getHours() + units);
                         break;
@@ -41,8 +50,6 @@ module.exports = function (date) {
                     case 'minutes':
                         this.date.setMinutes(this.date.getMinutes() + units);
                         break;
-                    default:
-                        throw new TypeError();
                 }
                 return this;
             },
@@ -52,6 +59,10 @@ module.exports = function (date) {
 
         'subtract': {
             value: function (units, type) {
+                if (units < 0 || !['hours', 'months', 'days', 'minutes'].includes(type)) {
+                    throw new TypeError();
+                }
+
                 switch (type) {
                     case 'hours':
                         this.date.setHours(this.date.getHours() - units);
@@ -65,8 +76,6 @@ module.exports = function (date) {
                     case 'minutes':
                         this.date.setMinutes(this.date.getMinutes() - units);
                         break;
-                    default:
-                        throw new TypeError();
                 }
                 return this;
             },
