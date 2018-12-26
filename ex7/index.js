@@ -30,7 +30,6 @@ module.exports = function (date) {
     return Object.defineProperties(obj, {
         'add': {
             value: function (units, type) {
-                console.log(units, type);
                 if (units < 0 || !['hours', 'months', 'days', 'minutes', 'years'].includes(type)) {
                     throw new TypeError();
                 }
@@ -38,6 +37,7 @@ module.exports = function (date) {
                 switch (type) {
                     case 'years':
                         this.date.setFullYear(this.date.getFullYear() + units);
+                        break;
                     case 'hours':
                         this.date.setHours(this.date.getHours() + units);
                         break;
@@ -59,11 +59,14 @@ module.exports = function (date) {
 
         'subtract': {
             value: function (units, type) {
-                if (units < 0 || !['hours', 'months', 'days', 'minutes'].includes(type)) {
+                if (units < 0 || !['hours', 'months', 'days', 'minutes', 'years'].includes(type)) {
                     throw new TypeError();
                 }
 
                 switch (type) {
+                    case 'years':
+                        this.date.setFullYear(this.date.getFullYear() - units);
+                        break;
                     case 'hours':
                         this.date.setHours(this.date.getHours() - units);
                         break;
